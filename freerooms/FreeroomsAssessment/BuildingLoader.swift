@@ -33,19 +33,29 @@ public class BuildingLoader {
                         return .failure(Error.invalidData)
                     }
                 
-                let decoder = JSONDecoder()
-            return .success([])
-//            let buildings: [Building] = try! decoder.decode([Building].self, from: data)
-                
-        case .failure(let error):
+            let decoder = JSONDecoder()
+            do {
+                let buildings: [RemoteBuilding] = try decoder.decode([RemoteBuilding].self, from: data)
+                return .success( buildings.map {
+                    Building(
+                        name: $0.building_name,
+                        id:  $0.building_id.uuidString,
+                        latitude: $0.building_latitude,
+                        longitude: $0.building_longitude,
+                        aliases: $0.building_aliases
+                    )
+
+                })
+            } catch {
+                return .failure(Error.invalidData)
+            }
+
+
+                            
+        case .failure(_):
             return .failure(Error.connectivity)
         }
-//            guard response?.statusCode == 200 else {
-//                return .failure(Error.invalidData)
-//            }
-            
-                
-//        return .failure(Error.invalidData)
+
     }
 }
 

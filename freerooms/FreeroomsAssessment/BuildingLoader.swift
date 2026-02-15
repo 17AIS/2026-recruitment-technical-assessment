@@ -23,19 +23,29 @@ public class BuildingLoader {
     }
     
     public func fetchBuildings() async -> Result  {
-        do {
-            let (data, response) = try await URLSession.shared.data(from: self.url)
-            guard (response as? HTTPURLResponse)?.statusCode == 200 else {
-                return .failure(Error.invalidData)
-            }
-            print(data)
-        } catch {
+
+            
+        let result = await client.get(from: self.url)
+        
+        switch result {
+        case .success(let (data, response)):
+                guard response.statusCode == 200 else  {
+                        return .failure(Error.invalidData)
+                    }
+                
+                let decoder = JSONDecoder()
+            return .success([])
+//            let buildings: [Building] = try! decoder.decode([Building].self, from: data)
+                
+        case .failure(let error):
             return .failure(Error.connectivity)
         }
-        
+//            guard response?.statusCode == 200 else {
+//                return .failure(Error.invalidData)
+//            }
+            
                 
-        return .failure(Error.connectivity)
-//        return .success([])
+//        return .failure(Error.invalidData)
     }
 }
 

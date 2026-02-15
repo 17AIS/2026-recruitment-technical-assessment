@@ -23,6 +23,19 @@ public class BuildingLoader {
     }
     
     public func fetchBuildings() async -> Result  {
-        fatalError("TODO")
+        do {
+            let (data, response) = try await URLSession.shared.data(from: self.url)
+            guard (response as? HTTPURLResponse)?.statusCode == 200 else {
+                return .failure(Error.invalidData)
+            }
+            print(data)
+        } catch {
+            return .failure(Error.connectivity)
+        }
+        
+                
+        return .failure(Error.connectivity)
+//        return .success([])
     }
 }
+
